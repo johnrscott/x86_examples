@@ -17,49 +17,35 @@
 	int $0x80
 	.endm
 
-	/* Write a string literal to the console. 
-	*/
-	.macro PUTS string
-	.data
-0:
-	.ascii "\string"
-	.equ len, .-0b
-	.text
-	WRITE 1, 0b, len
-	.endm
-
-	/* Print a single char to stdout. */
-	.macro
-	
-	/* Write a string literal to the console. */
-	.macro PUTS_G string
-	PUTS "\033[1;32m\string\033[0m"
-	.endm
-
-	/* Write a string literal to the console. */
-	.macro PUTS_R string
-	PUTS "\033[1;31m\string\033[0m"
-	.endm
-
-	/* Write a string literal to the console. */
-	.macro PUTS_B string
-	PUTS "\033[1;34m\string\033[0m"
-	.endm
-
-	
-	.data
-msg:
-	.ascii "Test\n"
-	.equ msg_len, .-msg
-
 	.text	
 	.global _start
 _start:
-	WRITE 1, msg, msg_len
-	PUTS_R "test and things\n"
-	PUTS_G "test and things\n"
-	PUTS_B "test and things\n"
-	PUTS "test and things\n"
-
+	mov $'b', %edi
+	mov $32, %esi
+	call putchar
 	EXIT 0
 
+	.data
+char_buf:	
+	.ascii "\033[1;"
+col:
+	.ascii "34m" /* Write the two digit colour code to NN */
+char:
+	.ascii "C\033[0m" /* Write the char to print to C */
+	.equ char_buf_len, .-char_buf
+
+	.text	
+	
+	/* Print a single coloured char to the console.
+	Pass the char C in edi, and the colour in esi (the integer
+	NN that is used in the expression \033[1;NNm. 
+	*/ 
+putchar:
+	mov %edi, char
+	mov $char_buf_len, %edx
+	mov $char_buf, %ecx
+	mov $1, %ebx
+	mov $4, %eax
+	int $0x80
+	ret
+	
