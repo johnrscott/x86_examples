@@ -1,5 +1,8 @@
 hello.bin: hello.o
-	ld hello.o -T link.ld -o hello.bin
+	ld -melf_i386 hello.o -o hello.bin
 
 hello.o: hello.s
-	as hello.s -o hello.o
+	as --32 hello.s -o hello.o
+
+clean:
+	rm *.o *.bin
