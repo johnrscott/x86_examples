@@ -19,7 +19,7 @@
 
 	/* Write a string literal to the console. 
 	*/
-	.macro PUTS_LIT string
+	.macro PUTS string
 	.data
 0:
 	.ascii "\string"
@@ -27,6 +27,25 @@
 	.text
 	WRITE 1, 0b, len
 	.endm
+
+	/* Print a single char to stdout. */
+	.macro
+	
+	/* Write a string literal to the console. */
+	.macro PUTS_G string
+	PUTS "\033[1;32m\string\033[0m"
+	.endm
+
+	/* Write a string literal to the console. */
+	.macro PUTS_R string
+	PUTS "\033[1;31m\string\033[0m"
+	.endm
+
+	/* Write a string literal to the console. */
+	.macro PUTS_B string
+	PUTS "\033[1;34m\string\033[0m"
+	.endm
+
 	
 	.data
 msg:
@@ -37,6 +56,10 @@ msg:
 	.global _start
 _start:
 	WRITE 1, msg, msg_len
-	PUTS_LIT "test and things"
+	PUTS_R "test and things\n"
+	PUTS_G "test and things\n"
+	PUTS_B "test and things\n"
+	PUTS "test and things\n"
+
 	EXIT 0
 
