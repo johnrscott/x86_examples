@@ -49,14 +49,14 @@ missed:	inc %r11
 wrong:	mov $RED, %esi
 	jmp output
 
-found:	sub $16, %r11
+found:	movb $'.', (%r11)
+	sub $16, %r11
 	cmp %r11, %r10
 	jne orange
 green:	mov $GREEN, %esi
 	jmp output
 	
 orange:	mov $ORANGE, %esi
-	movb $'.', (%r11)
 output:	call putchar
 	inc %r10
 	jmp 0b
