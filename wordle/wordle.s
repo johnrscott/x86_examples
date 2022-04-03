@@ -1,51 +1,60 @@
 
+	.global _start
+
+	
 	/* Exit program with code; use: "EXIT code". */
 	.macro EXIT code
 	mov $\code, %ebx
 	mov $1, %eax
 	int $0x80
 	.endm
+	
+	.equ RED, '1'	
+	.equ GREEN, '2'
+	.equ ORANGE, '3'
+	.equ BLUE, '4'
+	.equ PURPLE, '5'
+	.equ CYAN, '6'
 
-	/* Write to a file descriptor; use: "WRITE fd, buf, count".
-	fd is an integer literal, buf is a symbol pointing to memory,
-	and count is a constant count for the number of bytes to write. */
-	.macro WRITE fd, buf, count
-	mov $\count, %edx
-	mov $\buf, %ecx
-	mov $\fd, %ebx
-	mov $4, %eax
-	int $0x80
+	.macro PUTCHAR char, colour
+	mov $\char, %edi
+	mov $\colour, %esi
+	call putchar	
 	.endm
 
-	.text	
-	.global _start
-_start:
-	mov $'b', %edi
-	mov $32, %esi
-	call putchar
-	EXIT 0
-
 	.data
-char_buf:	
-	.ascii "\033[1;"
-col:
-	.ascii "34m" /* Write the two digit colour code to NN */
-char:
-	.ascii "C\033[0m" /* Write the char to print to C */
-	.equ char_buf_len, .-char_buf
+col_buf:
+	.space 5, BLUE
+		
+	.text
 
-	.text	
-	
-	/* Print a single coloured char to the console.
-	Pass the char C in edi, and the colour in esi (the integer
-	NN that is used in the expression \033[1;NNm. 
-	*/ 
-putchar:
-	mov %dil, char /* only move one byte to buffer */
-	mov $char_buf_len, %edx
-	mov $char_buf, %ecx
-	mov $1, %ebx
-	mov $4, %eax
-	int $0x80
+	/* Print the word in colours depending on whether
+	the letters are in the answer or not. Letters are printed
+	red if they are not in the answer, orange if they are not
+	in the correct position, and green if they are in the
+	right position. The function expects the test word to
+	be in the read_buf.
+	*/
+print_word:
+	mov $read_buf, %r10
+0:	cmp $answer, %r10
+	je 1f
+	mov (%r10), %edi
+	cmp 5(%r10), %dil
+	jne 2f
+2:	mov $BLUE, %esi
+	call putchar
+	inc %r10
+1:	PUTCHAR '\n', BLUE
 	ret
+	
+_start:
+	xor %r9, %r9
+0:	cmp $5, %r9 /* only allow 5 guesses */
+	je exit
+	call read_line /* read guess into read_buf */
+	call print_word
+	inc %r9
+	jmp 0b
+exit:	EXIT 0
 	
