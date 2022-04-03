@@ -38,17 +38,22 @@ col_buf:
 print_word:
 	mov $read_buf, %r10
 0:	cmp $answer-1, %r10
-	je 1f
-	mov (%r10), %edi
-	cmp 6(%r10), %dil
-	jne 2f
-	mov $GREEN, %esi
-	jmp 3f
-2:	mov $RED, %esi
-3:	call putchar
+	je end
+	mov (%r10), %edi /* Get current letter of read_buf */
+	mov $answer, %r11
+search:	cmp (%r11), %dil
+	je found
+missed:	inc %r11
+	cmp $answer+6, %r11
+	jne search
+wrong:	mov $RED, %esi
+	jmp print
+
+found:	mov $ORANGE, %esi
+print:	call putchar
 	inc %r10
 	jmp 0b
-1:	PUTCHAR '\n', BLUE
+end:	PUTCHAR '\n', BLUE
 	ret
 	
 _start:
