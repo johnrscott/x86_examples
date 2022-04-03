@@ -35,33 +35,40 @@ col_buf:
 	right position. The function expects the test word to
 	be in the read_buf.
 	*/
-print_word:
+print:
 	mov $read_buf, %r10
-0:	cmp $answer-1, %r10
+0:	cmp $read_buf+5, %r10
 	je end
 	mov (%r10), %edi /* Get current letter of read_buf */
-	mov $answer, %r11
+	mov $temp, %r11
 search:	cmp (%r11), %dil
 	je found
 missed:	inc %r11
-	cmp $answer+6, %r11
+	cmp $temp+6, %r11
 	jne search
 wrong:	mov $RED, %esi
-	jmp print
+	jmp output
 
 found:	mov $ORANGE, %esi
-print:	call putchar
+	movb $'.', (%r11)
+output:	call putchar
 	inc %r10
 	jmp 0b
 end:	PUTCHAR '\n', BLUE
+	ret
+
+copy:
+	mov answer, %r11
+	mov %r11, temp
 	ret
 	
 _start:
 	xor %r9, %r9
 0:	cmp $5, %r9 /* only allow 5 guesses */
 	je exit
-	call read_line /* read guess into read_buf */
-	call print_word
+	call read /* read guess into read_buf */
+	call copy
+	call print
 	inc %r9
 	jmp 0b
 exit:	EXIT 0

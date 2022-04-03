@@ -1,8 +1,9 @@
 
 	.global putchar
-	.global read_line
+	.global read
 	.global read_buf
 	.global answer
+	.global temp
 	
 	.data
 char_buf:	
@@ -54,15 +55,17 @@ putchar:
 read_buf:	
 	.space 6
 answer:
-	.ascii "hello\n"
+	.ascii "champ\n  " /* Padded to make 8 bytes */
 	.equ answer_offset, read_buf-answer
-
+temp:
+	.space 8 /* Extra space to allow 8-byte move */
+	
 	
 	.text
 	/* Read a single line from the terminal. Result will be stored
 	in the read_buf. Only a maximum of 20 characters will be stored.
 	*/
-read_line:
+read:
 	mov $6, %edx
 	mov $read_buf, %ecx
 	mov $1, %ebx
