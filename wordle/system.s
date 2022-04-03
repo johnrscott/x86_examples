@@ -53,7 +53,7 @@ putchar:
 
 	.data
 read_buf:	
-	.space 6
+	.space 8
 answer:
 	.ascii "champ\n  " /* Padded to make 8 bytes */
 	.equ answer_offset, read_buf-answer
