@@ -37,14 +37,17 @@ col_buf:
 	*/
 print_word:
 	mov $read_buf, %r10
-0:	cmp $answer, %r10
+0:	cmp $answer-1, %r10
 	je 1f
 	mov (%r10), %edi
-	cmp 5(%r10), %dil
+	cmp 6(%r10), %dil
 	jne 2f
-2:	mov $BLUE, %esi
-	call putchar
+	mov $GREEN, %esi
+	jmp 3f
+2:	mov $RED, %esi
+3:	call putchar
 	inc %r10
+	jmp 0b
 1:	PUTCHAR '\n', BLUE
 	ret
 	

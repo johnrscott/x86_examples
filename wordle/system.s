@@ -52,9 +52,9 @@ putchar:
 
 	.data
 read_buf:	
-	.space 5
+	.space 6
 answer:
-	.ascii "hello"
+	.ascii "hello\n"
 	.equ answer_offset, read_buf-answer
 
 	
@@ -63,7 +63,7 @@ answer:
 	in the read_buf. Only a maximum of 20 characters will be stored.
 	*/
 read_line:
-	mov $6, %edx /* Not sure why 6 is needed -- maybe newline? */
+	mov $6, %edx
 	mov $read_buf, %ecx
 	mov $1, %ebx
 	mov $3, %eax
