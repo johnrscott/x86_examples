@@ -41,7 +41,7 @@ char:
 	NN that is used in the expression \033[1;NNm. 
 	*/ 
 putchar:
-	mov %edi, char
+	mov %dil, char /* only move one byte to buffer */
 	mov $char_buf_len, %edx
 	mov $char_buf, %ecx
 	mov $1, %ebx
