@@ -28,48 +28,28 @@ col_buf:
 		
 	.text
 
-	/* Print the word in colours depending on whether
-	the letters are in the answer or not. Letters are printed
-	red if they are not in the answer, orange if they are not
-	in the correct position, and green if they are in the
-	right position. The function expects the test word to
-	be in the read_buf.
-	*/
+	/* Print colour-coded letters */
 print:
+	
+	
+	/* Copy the answer to a temporary buffer */
+copy:
+	mov answer, %r10
+	mov %r10, temp
+	ret
+
+	/* Remove correctly placed letters from temp */
+remove:
 	mov $read_buf, %r10
 0:	cmp $read_buf+5, %r10
-	je end
-	mov (%r10), %edi /* Get current letter of read_buf */
-	mov $temp, %r11
-
-equal:	cmp 16(%r10), %dil
-	jne search
-	movb $'.', 16(%r10)
-	mov $GREEN, %esi
-	jmp output
-search:	cmp (%r11), %dil
-	je found
-missed:	inc %r11
-	cmp $temp+8, %r11
-	jne search
-wrong:	mov $RED, %esi
-	jmp output
-
-found:	movb $'.', (%r11)
-	sub $16, %r11
-	cmp %r11, %r10
-	jne orange	
-orange:	mov $ORANGE, %esi
-output:	call putchar
-	inc %r10
+	je 1f
+	mov (%r10), %dil
+	cmp 16(%r10), %dil
+	jne 2f
+	movb $'.', 16(%r10) 
+2:	inc %r10
 	jmp 0b
-end:	PUTCHAR '\n', BLUE
-	ret
-
-copy:
-	mov answer, %r11
-	mov %r11, temp
-	ret
+1:	ret
 	
 _start:
 	xor %r9, %r9
@@ -77,6 +57,7 @@ _start:
 	je exit
 	call read /* read guess into read_buf */
 	call copy
+	call remove
 	call print
 	inc %r9
 	jmp 0b

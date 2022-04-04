@@ -56,7 +56,6 @@ read_buf:
 	.space 8
 answer:
 	.ascii "apple\n  " /* Padded to make 8 bytes */
-	.equ answer_offset, read_buf-answer
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 	
