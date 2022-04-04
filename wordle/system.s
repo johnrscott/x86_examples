@@ -1,7 +1,7 @@
 
 	.global putchar
 	.global read
-	.global read_buf
+	.global guess
 	.global answer
 	.global temp
 	
@@ -52,7 +52,7 @@ putchar:
 	ret
 
 	.data
-read_buf:	
+guess:	
 	.space 8
 answer:
 	.ascii "apple\n  " /* Padded to make 8 bytes */
@@ -66,7 +66,7 @@ temp:
 	*/
 read:
 	mov $6, %edx
-	mov $read_buf, %ecx
+	mov $guess, %ecx
 	mov $1, %ebx
 	mov $3, %eax
 	int $0x80

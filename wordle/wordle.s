@@ -30,32 +30,38 @@ col_buf:
 
 	/* Print colour-coded letters */
 print:
-	mov $read_buf, %r10
-	mov $temp, %r11
-begin:	cmp $read_buf+6, %r10
+	mov $guess, %r10
+	/* Loop over all the letters in the guess */
+begin:	cmp $guess+5, %r10
 	je 0f
 	/* Check if the letter is correctly placed */
+	mov $temp, %r11
 equal:	mov (%r10), %dil
 	cmp 8(%r10), %dil
-	jne search
+	jne end
 	mov $GREEN, %esi
 	call putchar
 	jmp end
 	/* If not, check if the letter is present anywhere */
-search:	cmp (%r11), %dil
+search: cmp (%r11), %dil
 	je hit
+	cmp $temp+5, %r11
+	je miss
 	inc %r11
-	jmp search
+	jmp search	
 miss:	mov $RED, %esi
-	jmp end
+	call putchar
 	/* If found, remove the letter from the temp buffer */
 hit:	mov $ORANGE, %esi
 	call putchar
 	movb $'.', (%r11)
 end:	inc %r10
-	jmp begin 
+	jmp begin
 
-0:	ret
+	
+0:	mov $'\n', %edi
+	call putchar
+	ret
 	
 	
 	/* Copy the answer to a temporary buffer */
@@ -66,8 +72,8 @@ copy:
 
 	/* Remove correctly placed letters from temp */
 remove:
-	mov $read_buf, %r10
-0:	cmp $read_buf+5, %r10
+	mov $guess, %r10
+0:	cmp $guess+5, %r10
 	je 1f
 	mov (%r10), %dil
 	cmp 16(%r10), %dil
