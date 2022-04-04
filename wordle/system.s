@@ -4,6 +4,36 @@
 	.global guess
 	.global answer
 	.global temp
+	.global pause
+	.global timer_on
+	
+	.data
+	/* Timer data structure. Set timer_usec to non-zero to enable. */
+timer_data:
+	.int 0,0
+timer_usec:
+	.int 0,500000
+	
+	.text	
+	/* Handler for the alarm signal. Do nothing and return */
+alarm:	
+	ret
+
+pause:
+	mov $29, %eax
+	int $0x80
+	ret
+	
+timer_on:
+	mov $104, %eax
+	mov $0, %ebx /* Timer type */
+	mov $timer_data, %ecx /* New timer data */
+	mov $0, %edx /* Old timer data (null) */
+	int $0x80
+	ret
+	
+timer_off:	
+	ret
 	
 	.data
 char_buf:	
