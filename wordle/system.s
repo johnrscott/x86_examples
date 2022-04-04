@@ -4,41 +4,61 @@
 	.global guess
 	.global answer
 	.global temp
-	.global pause
-	.global timer_on
+	.global wait
 	.global signal
+
+	.text
+
+trampoline:
+	call sigreturn
+	
+sigreturn:
+	mov $129, %eax
+	int $0x80
+	/* The return below will not execute in normal use */
+	ret
 	
 	.data
 	/* Timer data structure. Set timer_usec to non-zero to enable. */
 timer_data:
 	.int 0,0
 timer_usec:
-	.int 0,500000
+	.int 1,0
+
+action:
+	.int alarm /* sa_handler */
+	.int 0 /* sa_mask */
+	.int 0x14000000 /* sa_flags = SA_RESTORER */
+	.int trampoline /* sa_restorer */
 	
 	.text	
 	/* Handler for the alarm signal. Do nothing and return */
 alarm:
 	ret
 	
-	/* Perform signal setup here (\todo change to sigaction) */
+	.text
+	/* Perform signal setup here (using sigaction) */
 signal:
-	mov $48, %eax
+	mov $67, %eax
 	mov $14, %ebx /* SIGALRM */
-	mov $alarm, %ecx /* Handler */
+	mov $action, %ecx
+	mov $0, %edx
 	int $0x80
 	ret
-	
+
 pause:
 	mov $29, %eax
 	int $0x80
-	ret
+	/* The signal handler will jump here */
+cont:	ret	
 	
-timer_on:
+wait:
 	mov $104, %eax
 	mov $0, %ebx /* Timer type */
 	mov $timer_data, %ecx /* New timer data */
 	mov $0, %edx /* Old timer data (null) */
 	int $0x80
+	call pause
 	ret
 	
 	.data

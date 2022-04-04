@@ -90,8 +90,7 @@ _start:
 	je exit
 	call read /* read guess into read_buf */
 	call signal
-	call timer_on
-	call pause
+	call wait
 	call copy
 	call remove
 	call print
