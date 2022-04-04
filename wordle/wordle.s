@@ -30,6 +30,32 @@ col_buf:
 
 	/* Print colour-coded letters */
 print:
+	mov $read_buf, %r10
+	mov $temp, %r11
+begin:	cmp $read_buf+6, %r10
+	je 0f
+	/* Check if the letter is correctly placed */
+equal:	mov (%r10), %dil
+	cmp 8(%r10), %dil
+	jne search
+	mov $GREEN, %esi
+	call putchar
+	jmp end
+	/* If not, check if the letter is present anywhere */
+search:	cmp (%r11), %dil
+	je hit
+	inc %r11
+	jmp search
+miss:	mov $RED, %esi
+	jmp end
+	/* If found, remove the letter from the temp buffer */
+hit:	mov $ORANGE, %esi
+	call putchar
+	movb $'.', (%r11)
+end:	inc %r10
+	jmp begin 
+
+0:	ret
 	
 	
 	/* Copy the answer to a temporary buffer */
