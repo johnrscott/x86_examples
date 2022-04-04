@@ -44,7 +44,7 @@ print:
 search:	cmp (%r11), %dil
 	je found
 missed:	inc %r11
-	cmp $temp+6, %r11
+	cmp $temp+8, %r11
 	jne search
 wrong:	mov $RED, %esi
 	jmp output
