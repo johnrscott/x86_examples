@@ -41,6 +41,12 @@ print:
 	je end
 	mov (%r10), %edi /* Get current letter of read_buf */
 	mov $temp, %r11
+
+equal:	cmp 16(%r10), %dil
+	jne search
+	movb $'.', 16(%r10)
+	mov $GREEN, %esi
+	jmp output
 search:	cmp (%r11), %dil
 	je found
 missed:	inc %r11
@@ -52,10 +58,7 @@ wrong:	mov $RED, %esi
 found:	movb $'.', (%r11)
 	sub $16, %r11
 	cmp %r11, %r10
-	jne orange
-green:	mov $GREEN, %esi
-	jmp output
-	
+	jne orange	
 orange:	mov $ORANGE, %esi
 output:	call putchar
 	inc %r10
