@@ -19,7 +19,6 @@ timer_usec:
 	/* Handler for the alarm signal. Do nothing and return */
 alarm:
 	ret
-
 	
 	/* Perform signal setup here (\todo change to sigaction) */
 signal:
