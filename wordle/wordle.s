@@ -89,6 +89,7 @@ _start:
 0:	cmp $5, %r9 /* only allow 5 guesses */
 	je exit
 	call read /* read guess into read_buf */
+	;; call signal
 	call timer_on
 	call pause
 	call copy

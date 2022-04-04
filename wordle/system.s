@@ -6,6 +6,7 @@
 	.global temp
 	.global pause
 	.global timer_on
+	.global signal
 	
 	.data
 	/* Timer data structure. Set timer_usec to non-zero to enable. */
@@ -16,9 +17,18 @@ timer_usec:
 	
 	.text	
 	/* Handler for the alarm signal. Do nothing and return */
-alarm:	
+alarm:
 	ret
 
+	
+	/* Perform signal setup here (\todo change to sigaction) */
+signal:
+	mov $48, %eax
+	mov $14, %ebx /* SIGALRM */
+	mov $alarm, %ecx /* Handler */
+	int $0x80
+	ret
+	
 pause:
 	mov $29, %eax
 	int $0x80
@@ -30,9 +40,6 @@ timer_on:
 	mov $timer_data, %ecx /* New timer data */
 	mov $0, %edx /* Old timer data (null) */
 	int $0x80
-	ret
-	
-timer_off:	
 	ret
 	
 	.data
