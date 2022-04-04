@@ -38,7 +38,7 @@ begin:	cmp $guess+5, %r10
 	mov $temp, %r11
 equal:	mov (%r10), %dil
 	cmp 8(%r10), %dil
-	jne end
+	jne search
 	mov $GREEN, %esi
 	call putchar
 	jmp end
@@ -51,6 +51,7 @@ search: cmp (%r11), %dil
 	jmp search	
 miss:	mov $RED, %esi
 	call putchar
+	jmp end
 	/* If found, remove the letter from the temp buffer */
 hit:	mov $ORANGE, %esi
 	call putchar
