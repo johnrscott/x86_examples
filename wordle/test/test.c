@@ -4,7 +4,7 @@
  
 void sig_handler(int signum){
  
-  printf("Inside handler function\n");
+  /* printf("Inside handler function\n"); */
 }
  
 int main(){

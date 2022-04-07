@@ -58,6 +58,7 @@ wait:
 	mov $timer_data, %ecx /* New timer data */
 	mov $0, %edx /* Old timer data (null) */
 	int $0x80
+abc:	jmp abc
 	call pause
 	ret
 	
