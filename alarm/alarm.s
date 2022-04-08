@@ -37,7 +37,7 @@ sigaction:
 timer:
 	.int 0, 0
 	.int 0, 0
-	.int 2, 0 /* Timer value in seconds */
+	.int 1, 0 /* Timer value in seconds */
 	.int 0, 0
 	
 	.text
@@ -57,6 +57,11 @@ rt_sigaction:
 	mov $8, %r10
 	syscall
 	ret
+
+pause:
+	mov $34, %rax
+	syscall
+	ret
 	
 _start:
 	/* Set up alarm handler */
@@ -67,5 +72,6 @@ _start:
 	mov $timer, %rsi
 	mov $0, %rdx
 	syscall
-abc:	jmp abc
+	call pause
+	jmp _start
 	jmp exit
