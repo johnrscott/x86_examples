@@ -1,35 +1,63 @@
 	.global _start
 
 
+	.equiv SA_RESTORER, 0x04000000
+	.equiv ITIMER_REAL, 0
+
+	.data
+msg:	.ascii "Test\n"
+	
 	.text
 
+restorer:
+	ret
 
+handler:
+	mov $1, %rax
+	mov msg, %rdi
+	mov $5, %rdi
+	syscall
+	ret
 	
 	.data
 	
 sigaction:
-	.int 0,0
-	.int 
-
+	.8byte handler /* void (*sa_handler)(int);  */
+	.8byte SA_RESTORER /* sa_flags */
+	.8byte restorer
+	.8byte 0 /* sa_mask */
+timer:
+	.int 0, 0
+	.int 0, 0
+	.int 2, 0 /* Timer value in seconds */
+	.int 0, 0
 	
 	.text
-
-handler:
-	ret
 	
 	/* Exit with code zero */
 exit:
 	mov $60, %rax
 	mov $0, %rdx
 	syscall
-
+	
 	/* Set up alarm signal */
 rt_sigaction:
-	mov handler, %rax
-	mov %rax, sigaction
 	mov $13, %rax
-	mov $14, %rdx /* ALARM */
-	
+	mov $14, %rdi /* ALARM */
+	mov $sigaction, %rsi /* sigaction struct */
+	mov $0, %rdx
+	mov $8, %r10
+	syscall
+	ret
 	
 _start:
+	/* Set up alarm handler */
+	call rt_sigaction
+	/* Set up timer */
+	mov $38, %rax
+	mov $ITIMER_REAL, %rdi
+	mov $timer, %rsi
+	mov $0, %rdx
+	syscall
+abc:	jmp abc
 	jmp exit
