@@ -3,6 +3,7 @@
 
 	.equiv SA_RESTORER, 0x04000000
 	.equiv ITIMER_REAL, 0
+	.equiv STDOUT, 0
 
 	.data
 msg:	.ascii "Test\n"
@@ -14,18 +15,21 @@ restorer:
 
 handler:
 	mov $1, %rax
-	mov msg, %rdi
-	mov $5, %rdi
+	mov $STDOUT, %rdi
+	mov $msg, %rsi
+	mov $5, %rdx
 	syscall
 	ret
 	
 	.data
-	
+
+	/* I have no idea where this struct is documented. It does not
+	agree with the man page */
 sigaction:
 	.8byte handler /* void (*sa_handler)(int);  */
 	.8byte SA_RESTORER /* sa_flags */
 	.8byte restorer
-	.8byte 0 /* sa_mask */
+	.8byte 1 /* sa_mask */
 timer:
 	.int 0, 0
 	.int 0, 0
