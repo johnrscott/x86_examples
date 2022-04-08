@@ -29,7 +29,6 @@ rt_sigaction:
 	mov %rax, sigaction
 	mov $13, %rax
 	mov $14, %rdx /* ALARM */
-	mov 
 	
 	
 _start:
