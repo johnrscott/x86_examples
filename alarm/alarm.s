@@ -28,12 +28,12 @@ handler:
 	.data
 
 	/* I have no idea where this struct is documented. It does not
-	agree with the man page */
+	agree with the man page (the mask should be before the flags) */
 sigaction:
 	.8byte handler /* void (*sa_handler)(int);  */
 	.8byte SA_RESTORER /* sa_flags */
 	.8byte restorer
-	.8byte 1 /* sa_mask */
+	.8byte 1 << 13 /* sa_mask */
 timer:
 	.int 0, 0
 	.int 0, 0

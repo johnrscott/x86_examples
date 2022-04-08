@@ -7,58 +7,67 @@
 	.global wait
 	.global signal
 
-	.text
 
-trampoline:
-	call sigreturn
+
+	.equiv SA_RESTORER, 0x04000000
+	.equiv ITIMER_REAL, 0
+	.equiv STDOUT, 0
 	
-sigreturn:
-	mov $129, %eax
-	int $0x80
-	/* The return below will not execute in normal use */
+	.text
+/* Handler for the alarm signal. Do nothing and return */
+
+alarm_handler:
 	ret
 	
+	
+restorer:
+	mov $15, %rax
+	mov $0, %rdi
+	syscall
+	/* This function never returns */
+	ret
+		
 	.data
 	/* Timer data structure. Set timer_usec to non-zero to enable. */
-timer_data:
-	.int 0,0
-timer_usec:
-	.int 1,0
+timer:
+	.int 0, 0
+	.int 0, 0
+	.int 1, 0 /* Timer value in seconds */
+	.int 0, 0
 
-action:
-	.int alarm /* sa_handler */
-	.int 0 /* sa_mask */
-	.int 0x14000000 /* sa_flags = SA_RESTORER */
-	.int trampoline /* sa_restorer */
+	/* I have no idea where this struct is documented. It does not
+	agree with the man page (the mask should be before the flags) */
+sigaction:
+	.8byte alarm_handler /* void (*sa_handler)(int);  */
+	.8byte SA_RESTORER /* sa_flags */
+	.8byte restorer
+	.8byte 1 << 13 /* sa_mask */
 	
 	.text	
-	/* Handler for the alarm signal. Do nothing and return */
-alarm:
-	ret
 	
 	.text
 	/* Perform signal setup here (using sigaction) */
 signal:
-	mov $67, %eax
-	mov $14, %ebx /* SIGALRM */
-	mov $action, %ecx
-	mov $0, %edx
-	int $0x80
+	mov $13, %rax
+	mov $14, %rdi /* ALARM */
+	mov $sigaction, %rsi /* sigaction struct */
+	mov $0, %rdx
+	mov $8, %r10
+	syscall
 	ret
-
+	
 pause:
-	mov $29, %eax
-	int $0x80
-	/* The signal handler will jump here */
-cont:	ret	
+	mov $34, %rax
+	syscall
+	ret
 	
 wait:
-	mov $104, %eax
-	mov $0, %ebx /* Timer type */
-	mov $timer_data, %ecx /* New timer data */
-	mov $0, %edx /* Old timer data (null) */
-	int $0x80
-abc:	jmp abc
+	/* Set up timer */
+	mov $38, %rax
+	mov $ITIMER_REAL, %rdi
+	mov $timer, %rsi
+	mov $0, %rdx
+	syscall
 	call pause
 	ret
 	
