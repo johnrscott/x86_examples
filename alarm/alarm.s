@@ -11,6 +11,10 @@ msg:	.ascii "Test\n"
 	.text
 
 restorer:
+	mov $15, %rax
+	mov $0, %rdi
+	syscall
+	/* This function never returns */
 	ret
 
 handler:
