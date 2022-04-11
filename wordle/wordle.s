@@ -56,7 +56,8 @@ miss:	mov $RED, %esi
 hit:	mov $ORANGE, %esi
 	call putchar
 	movb $'.', (%r11)
-end:	inc %r10
+end:	call wait
+	inc %r10
 	jmp begin
 
 	
@@ -90,7 +91,6 @@ _start:
 	je exit
 	call read /* read guess into read_buf */
 	call signal
-	call wait
 	call copy
 	call remove
 	call print

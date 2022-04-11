@@ -1,0 +1,5 @@
+#+TITLE: Small library of linux system calls
+
+System calls are used by programs to make requests of the operating system; for example, reading and writing to the console, setting up signal handlers, or exiting the program. System calls are made in x86_64 by using the ~syscall~ instruction. The set of system calls is summarised [[https://blog.rchapman.org/posts/Linux_System_Call_Table_for_x86_64/][here]]. 
+
+The calling convention followed in this library is the System V ABI, AMD64 architecture processor supplement, version 1.0. Each system call is exposed as a function that is designed to be compatible with the C standard library, or the POSIX definition of the same function defined in man pages.

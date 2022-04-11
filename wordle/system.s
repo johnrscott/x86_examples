@@ -32,8 +32,8 @@ restorer:
 timer:
 	.int 0, 0
 	.int 0, 0
-	.int 1, 0 /* Timer value in seconds */
-	.int 0, 0
+	.int 0, 0 /* Timer value in seconds */
+	.int 250000, 0 /* Timer value in microseconds */
 
 	/* I have no idea where this struct is documented. It does not
 	agree with the man page (the mask should be before the flags) */
