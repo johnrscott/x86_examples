@@ -11,3 +11,10 @@ exit:
 exit_0:	
 	mov $0, %rdi
 	call exit
+
+	/* int write(int fd, void * buf, unsigned count) */
+	.global write
+write:
+	mov $1, %rax
+	syscall
+	ret 
