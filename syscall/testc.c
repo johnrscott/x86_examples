@@ -24,10 +24,15 @@ int main()
     buf3.c_lflag &= (~ICANON & ~ECHO);
     ioctl(STDIN,TCSETS,&buf3);
 
-    for (int n = 0; n < 5; n++) {
+    for (int n = 0; n < 100; n++) {
 	char c;
+	char cr = '\r';
 	read(STDIN, &c, 1);
-	printf("%d\n", c);
+	if (c == 10) {
+	    write(STDOUT, &cr, 1);
+	} else {
+	    write(STDOUT, &c, 1);
+	}
     }
 
     ioctl(STDIN,TCSETS,&buf2); // Reset    
