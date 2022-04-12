@@ -9,5 +9,5 @@ test.o: test.s syscall.inc
 syscall.o: syscall.s syscall.s
 	as syscall.s -o syscall.o
 
-testc.bin: testc.c syscall.o
+testc.bin: testc.c syscall.o syscall.h
 	gcc testc.c syscall.o -o testc.bin

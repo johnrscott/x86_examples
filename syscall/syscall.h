@@ -18,6 +18,9 @@ void exit_0();
 #define STDOUT 1
 #define STDERR 2
 
+/// Define null pointer
+#define NULL 0
+
 /** 
  * \brief Write count characters to file descriptor fd from buffer buf 
  *
@@ -32,6 +35,15 @@ int write(int fd, void * buf, unsigned count);
  */ 
 int read(int fd, void * buf, unsigned count);
 
+struct timespec
+{
+    long tv_sec;
+    long tv_nsec;
+};
 
+/**
+ * \brief Sleep for a specified number of seconds and nanoseconds
+ */
+int nanosleep(const struct timespec * rec, struct timespec * rem);
 
 #endif

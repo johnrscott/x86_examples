@@ -7,7 +7,7 @@ buf3:	.space 20
 buf4:	.ascii "Sleep\n"
 buf5:	.ascii "Done\n"
 
-timespec:
+ts_time:
 	.int 0,0
 	.int 250000000, 0 /* 250 milliseconds */
 	
@@ -41,8 +41,8 @@ _start:
 	mov $buf4, %rsi
 	mov $6, %rdx
 	call write
-	/* nanosleep(&timespec, NULL); */
-	mov $timespec, %rdi
+	/* nanosleep(&ts_time, NULL); */
+	mov $ts_time, %rdi
 	xor %rsi,%rsi
 	call nanosleep
 	inc %r12
