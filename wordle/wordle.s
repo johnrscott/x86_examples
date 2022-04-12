@@ -1,31 +1,21 @@
-
-	.global _start
-
-	
-	/* Exit program with code; use: "EXIT code". */
-	.macro EXIT code
-	mov $\code, %ebx
-	mov $1, %eax
-	int $0x80
-	.endm
-	
-	.equ RED, '1'	
-	.equ GREEN, '2'
-	.equ ORANGE, '3'
-	.equ BLUE, '4'
-	.equ PURPLE, '5'
-	.equ CYAN, '6'
-
-	.macro PUTCHAR char, colour
-	mov $\char, %edi
-	mov $\colour, %esi
-	call putchar	
-	.endm
+	.include "syscall.inc"
+	.include "io.inc"
 
 	.data
 col_buf:
 	.space 5, BLUE
-		
+
+guess:	
+	.space 8
+answer:
+	.ascii "apple\n  " /* Padded to make 8 bytes */
+temp:
+	.space 8 /* Extra space to allow 8-byte move */
+
+ts_time:
+	.int 0,0
+	.int 250000000, 0 /* Sleep time, nanoseconds */
+	
 	.text
 
 	/* Print colour-coded letters */
@@ -39,8 +29,8 @@ begin:	cmp $guess+5, %r10
 equal:	mov (%r10), %dil
 	cmp 8(%r10), %dil
 	jne search
-	mov $GREEN, %esi
-	call putchar
+	mov $GREEN, %rsi
+	call putchar_colour
 	jmp end
 	/* If not, check if the letter is present anywhere */
 search: cmp (%r11), %dil
@@ -49,20 +39,23 @@ search: cmp (%r11), %dil
 	je miss
 	inc %r11
 	jmp search	
-miss:	mov $RED, %esi
-	call putchar
+miss:	mov $RED, %rsi
+	call putchar_colour
 	jmp end
 	/* If found, remove the letter from the temp buffer */
-hit:	mov $ORANGE, %esi
-	call putchar
+hit:	mov $ORANGE, %rsi
+	call putchar_colour
 	movb $'.', (%r11)
-end:	call wait
+end:	/* nanosleep(&ts_time, NULL); */
+	mov $ts_time, %rdi
+	xor %rsi, %rsi
+	call nanosleep
 	inc %r10
 	jmp begin
 
 	
 0:	mov $'\n', %edi
-	call putchar
+	call putchar_colour
 	ret
 	
 	
@@ -84,17 +77,22 @@ remove:
 2:	inc %r10
 	jmp 0b
 1:	ret
-	
+
+	.global _start
 _start:
 	xor %r9, %r9
 0:	cmp $5, %r9 /* only allow 5 guesses */
-	je exit
-	call read /* read guess into read_buf */
-	call signal
+	je 1f
+	/* read(STDIN, &guess, 6); */
+	mov $STDIN, %rdi
+	mov $guess, %rsi
+	mov $6, %rdx
+	call read
+	
 	call copy
 	call remove
 	call print
 	inc %r9
 	jmp 0b
-exit:	EXIT 0
+1:	call exit_0
 	
