@@ -46,4 +46,11 @@ struct timespec
  */
 int nanosleep(const struct timespec * rec, struct timespec * rem);
 
+/**
+ * \brief Set properties of an input/output device
+ */
+int ioctl(int fd, unsigned long cmd, void * buf);
+#define TCGETS 0x00005401
+
+
 #endif

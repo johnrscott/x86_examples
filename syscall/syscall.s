@@ -42,4 +42,10 @@ nanosleep:
 	mov $35, %rax
 	syscall
 	ret
-	
+
+	/* int ioctl(int fd, unsigned long cmd, unsigned long arg) */
+	.global ioctl
+ioctl:
+	mov $16, %rax
+	syscall
+	ret

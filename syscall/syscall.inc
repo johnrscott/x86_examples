@@ -11,3 +11,7 @@
 
 	/* int nanosleep(const struct timespec *, struct timespec * rem) */
 	.extern nanosleep 
+
+	/* int ioctl(int fd, unsigned long cmd, unsigned long arg) */
+	.extern	ioctl
+	.equiv TCGETS, 0x00005401
