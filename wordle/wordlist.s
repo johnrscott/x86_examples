@@ -1,5 +1,28 @@
+	.include "syscall.inc"
+
+	.data
+rand_buf:
+	.space 8
+	
 	.text
 
+	/* void get_random_word(char * buf) */
+	.global get_random_word
+get_random_word:
+	mov %rdi, %rcx
+	/* getrandom(&rand_buf, 8, 0); */
+	mov $rand_buf, %rdi
+	mov $8, %rsi
+	mov $0, %rdx
+	call getrandom
+	mov rand_buf, %rax /* dividend */
+	mov $NUM_WORDS, %rsi /* divisor */
+	div %rsi /* remainder in %rdx */
+	mov $wordlist, %rsi /* base of wordlist */
+	mov (%rsi, %rdx, 8), %rax
+	mov %rax, (%rcx) /* Move 8-bytes (5-byte word at low end) into buf */
+	ret	
+	
 	/* bool in_wordlist(char * word) */
 	.global in_wordlist
 in_wordlist:

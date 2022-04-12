@@ -15,7 +15,7 @@ col_buf:
 guess:	
 	.space 8
 answer:
-	.ascii "appls   " /* Padded to make 8 bytes */
+	.ascii "        " /* Padded to make 8 bytes */
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
