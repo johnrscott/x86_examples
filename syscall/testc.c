@@ -1,5 +1,4 @@
 #include "syscall.h"
-#include <stdio.h>
 
 int main()
 {
@@ -27,9 +26,17 @@ int main()
     for (int n = 0; n < 100; n++) {
 	char c;
 	char cr = '\r';
+	char bs = '\b';
+	char sp = ' ';
 	read(STDIN, &c, 1);
 	if (c == 10) {
+	    // Return to start of line
 	    write(STDOUT, &cr, 1);
+	} else if (c == 127) {
+	    // Delete previous character
+	    write(STDOUT, &bs, 1); // Backspace to reposition
+	    write(STDOUT, &sp, 1); // Space to overwrite
+	    write(STDOUT, &bs, 1); // Backspace to move back again	    
 	} else {
 	    write(STDOUT, &c, 1);
 	}
