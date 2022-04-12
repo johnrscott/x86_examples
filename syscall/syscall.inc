@@ -15,3 +15,6 @@
 	/* int ioctl(int fd, unsigned long cmd, unsigned long arg) */
 	.extern	ioctl
 	.equiv TCGETS, 0x00005401
+
+	/* int getrandom(void * buf, size_t buflen, unsigned int flags) */
+	.extern getrandom

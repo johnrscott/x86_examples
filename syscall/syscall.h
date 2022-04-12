@@ -67,4 +67,10 @@ struct termios
     char c_cc[8];
 };
 
+/**
+ * \brief Get a certain number of random bytes
+ */
+int getrandom(void * buf, long unsigned buflen, unsigned int flags);
+
+
 #endif

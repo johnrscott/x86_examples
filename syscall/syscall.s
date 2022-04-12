@@ -49,3 +49,10 @@ ioctl:
 	mov $16, %rax
 	syscall
 	ret
+
+	/* int getrandom(void * buf, size_t buflen, unsigned int flags) */
+	.global getrandom
+getrandom:
+	mov $318, %rax
+	syscall
+	ret
