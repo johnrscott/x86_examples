@@ -35,3 +35,11 @@ read:
 	mov $0, %rax
 	syscall
 	ret
+
+	/* int nanosleep(const struct timespec *, struct timespec * rem) */
+	.global nanosleep
+nanosleep:
+	mov $35, %rax
+	syscall
+	ret
+	

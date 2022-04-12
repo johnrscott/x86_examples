@@ -4,6 +4,12 @@
 buf1:	.ascii "Write some text and press enter: "
 buf2:	.ascii "You wrote: "
 buf3:	.space 20
+buf4:	.ascii "Sleep\n"
+buf5:	.ascii "Done\n"
+
+timespec:
+	.int 0,0
+	.int 250000000, 0 /* 250 milliseconds */
 	
 	.text
 	.global _start
@@ -27,6 +33,26 @@ _start:
 	mov $STDOUT, %rdi
 	mov $buf3, %rsi
 	mov %r12, %rdx
+	call write
+	/* for (int n = 0; n < 5; n++) { */
+	xor %r12, %r12	
+0:      /* write(STDOUT, &buf4, 6); */
+	mov $STDOUT, %rdi
+	mov $buf4, %rsi
+	mov $6, %rdx
+	call write
+	/* nanosleep(&timespec, NULL); */
+	mov $timespec, %rdi
+	xor %rsi,%rsi
+	call nanosleep
+	inc %r12
+	cmp $5, %r12
+	jne 0b
+	/* } */
+	/* write(STDOUT, &buf5, 5); */
+	mov $STDOUT, %rdi
+	mov $buf5, %rsi
+	mov $5, %rdx
 	call write
 	/* exit(2); */
 	mov $2, %rdi
