@@ -18,6 +18,7 @@ int main()
     write(STDOUT, "Done\n", 5);
 
     ioctl(STDIN,TCGETS,&buf2);
+    ioctl(STDIN,TCSETS,&buf2);
     
     exit(3);
 }

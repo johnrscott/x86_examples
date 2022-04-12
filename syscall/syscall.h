@@ -50,7 +50,14 @@ int nanosleep(const struct timespec * rec, struct timespec * rem);
  * \brief Set properties of an input/output device
  */
 int ioctl(int fd, unsigned long cmd, void * buf);
-#define TCGETS 0x00005401
-
+#define TCGETS 0x5401
+#define TCSETS 0x5401
+struct termios
+{
+    int c_iflag; ///< input modes
+    int c_oflag; ///< output modes
+    int c_cflag; ///< control modes
+    int c_lflag; ///< local modes
+};
 
 #endif
