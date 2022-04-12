@@ -28,3 +28,10 @@ write:
 	mov $1, %rax
 	syscall
 	ret 
+
+	/* int read(int fd, void * buf, unsigned count) */  
+	.global read
+read:
+	mov $0, %rax
+	syscall
+	ret

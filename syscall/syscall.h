@@ -1,3 +1,9 @@
+/**
+ * \file syscall.h
+ * \brief Simple library of linux system calls
+ *
+ */
+
 #ifndef SYSCALL_H
 #define SYSCALL_H
 
@@ -12,10 +18,20 @@ void exit_0();
 #define STDOUT 1
 #define STDERR 2
 
-/// Write count characters to file descriptor fd from buffer buf 
+/** 
+ * \brief Write count characters to file descriptor fd from buffer buf 
+ *
+ * Both read and write appear to have the same effect for all three file
+ * descriptors STDIN, STDOUT and STDERR.
+ */
 int write(int fd, void * buf, unsigned count);
 
-/// Read count characters from file descriptor fd into buffer buf 
+/**
+ * \brief Read count characters from file descriptor fd into buffer buf
+ *
+ */ 
 int read(int fd, void * buf, unsigned count);
+
+
 
 #endif

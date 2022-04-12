@@ -7,4 +7,4 @@
 	.equiv STDIN, 1 /* Standard console input */
 	.equiv STDERR, 2 /* Standard error (output) */
 	.extern write /* int write(int fd, void * buf, unsigned count) */
-	.extern read /* int read(int fd, void * buf, unsigned count) */ 
+	.extern read /* int read(int fd, void * buf, unsigned count) */  
