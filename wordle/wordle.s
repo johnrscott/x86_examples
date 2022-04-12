@@ -1,14 +1,21 @@
 	.include "syscall.inc"
 	.include "io.inc"
-
+	.include "wordlist.inc"
+	
 	.data
+
+hit_msg:
+	.ascii "Hit\n"
+miss_msg:
+	.ascii "Mis\n"
+	
 col_buf:
 	.space 5, BLUE
 
 guess:	
 	.space 8
 answer:
-	.ascii "apple\n  " /* Padded to make 8 bytes */
+	.ascii "appls   " /* Padded to make 8 bytes */
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
@@ -77,9 +84,21 @@ remove:
 2:	inc %r10
 	jmp 0b
 1:	ret
-
+	
 	.global _start
 _start:
+	mov $answer, %rdi
+	call in_wordlist
+	cmp $0, %rax
+	je 1f
+	mov $hit_msg, %rsi
+	jmp 2f
+1: 	mov $miss_msg, %rsi
+2:	mov $STDOUT, %rdi
+	mov $4, %rdx
+	call write
+	call exit_0
+
 	xor %r9, %r9
 0:	cmp $5, %r9 /* only allow 5 guesses */
 	je 1f
