@@ -10,4 +10,4 @@ syscall.o: syscall.s syscall.s
 	as syscall.s -o syscall.o
 
 testc.bin: testc.c syscall.o syscall.h
-	gcc testc.c syscall.o -o testc.bin
+	gcc -O3 testc.c syscall.o -o testc.bin
