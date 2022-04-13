@@ -8,13 +8,13 @@
 hit_msg:
 	.ascii "Hit\n"
 miss_msg:
-	.ascii "Mis\n"
+	.ascii "Miss\n"
 	
 col_buf:
 	.space 5, BLUE
 
 guess:	
-	.space 8
+	.ascii "        "
 answer:
 	.ascii "        " /* Padded to make 8 bytes */
 temp:
@@ -126,10 +126,11 @@ _start:
 	cmp $0, %rax
 	je 1f
 	mov $hit_msg, %rsi
+	mov $4, %rdx
 	jmp 2f
 1: 	mov $miss_msg, %rsi
+	mov $5, %rdx
 2:	mov $STDOUT, %rdi
-	mov $4, %rdx
 	call write
 
 	/* restore_input_mode() */
