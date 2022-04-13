@@ -115,10 +115,6 @@ _start:
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
 	/*call get_random_word */
-	/* copy(); */
-	call copy
-	/* remove(); */
-	call remove
 	/* write(STDOUT, &answer, 5); */
 	/*
 	mov $STDOUT, %rdi
@@ -173,7 +169,11 @@ _start:
 	call carriage_return
 	jmp 5b
 	
-2:	/* carriage_return(); */
+2:	/* copy(); */
+	call copy
+	/* remove(); */
+	call remove
+	/* carriage_return(); */
 	call carriage_return
 	call print
 	/* newline(); */
