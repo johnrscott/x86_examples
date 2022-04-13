@@ -1,6 +1,7 @@
 	.include "syscall.inc"
 	.include "io.inc"
 	.include "wordlist.inc"
+	.include "utils.inc"
 	
 	.data
 
@@ -85,6 +86,8 @@ remove:
 	jmp 0b
 1:	ret
 
+
+	
 	.global _start
 _start:
 	/* get_random_word(&answer); */
@@ -95,7 +98,11 @@ _start:
 	mov $answer, %rsi
 	mov $5, %rdx
 	call write
-	call exit_0
+	/* newline(); */
+	call newline
+	/* set_input_mode(); */
+	call set_input_mode
+
 	
 	mov $answer, %rdi
 	call in_wordlist
