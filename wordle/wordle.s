@@ -104,11 +104,11 @@ _start:
 	call set_input_mode
 0:	/* char c = listen_char() */
 	call listen_char
-	/* bool done = process_char(c, &guess); */
+	/* bool guess_is_ready = process_char(c, &guess); */
 	mov %al, %dil
 	mov $guess, %rsi
 	call process_char
-	/* if (done == false) goto 0b; */
+	/* if (!guess_is_read) goto 0b; */
 	cmp $0, %rax
 	je 0b 
 	/* newline() */

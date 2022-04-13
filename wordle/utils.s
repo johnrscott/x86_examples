@@ -34,8 +34,7 @@ count:
 
 	/* bool process_char(int character, char * buf) */
 	.global process_char
-process_char:
-	
+process_char:	
 	/* Look for special characters */
 	cmp $'\n', %dil
 	je 1f
@@ -44,6 +43,9 @@ process_char:
 	
 	/* Handle printable character */
 	mov count, %rdx
+	/* If guess already has five letters, do nothing else */
+	cmp $5, %rdx
+	je 3f
 	movb %dil, (%rsi, %rdx, 1)
 	incw count
 	call putchar
