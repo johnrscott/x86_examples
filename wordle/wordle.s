@@ -39,29 +39,31 @@ turn:
 
 	/* Print colour-coded letters */
 print:
+	push %r12
+	push %r13
 	/* write(STDOUT, &turn, 3); */
 	mov $STDOUT, %rdi
 	mov $turn, %rsi
 	mov $3, %rdx
 	call write
-	mov $guess, %r10
+	mov $guess, %r12
 	/* Loop over all the letters in the guess */
-begin:	cmp $guess+5, %r10
+begin:	cmp $guess+5, %r12
 	je 0f
 	/* Check if the letter is correctly placed */
-	mov $temp, %r11
-equal:	mov (%r10), %dil
-	cmp 8(%r10), %dil
+	mov $temp, %r13
+equal:	mov (%r12), %dil
+	cmp 8(%r12), %dil
 	jne search
 	mov $GREEN, %rsi
 	call putchar_colour
 	jmp end
 	/* If not, check if the letter is present anywhere */
-search: cmp (%r11), %dil
+search: cmp (%r13), %dil
 	je hit1
-	cmp $temp+5, %r11
+	cmp $temp+5, %r13
 	je miss
-	inc %r11
+	inc %r13
 	jmp search	
 miss:	mov $RED, %rsi
 	call putchar_colour
@@ -69,15 +71,17 @@ miss:	mov $RED, %rsi
 	/* If found, remove the letter from the temp buffer */
 hit1:	mov $ORANGE, %rsi
 	call putchar_colour
-	movb $'.', (%r11)
+	movb $'.', (%r13)
 end:	/* nanosleep(&ts_time, NULL); */
 	mov $ts_time, %rdi
 	xor %rsi, %rsi
 	call nanosleep
-	inc %r10
+	inc %r12
 	jmp begin
 	
-0:	ret
+0:	pop %r13
+	pop %r12
+	ret
 	
 	
 	/* void copy() */
