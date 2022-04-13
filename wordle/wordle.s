@@ -111,12 +111,16 @@ _start:
 	/* copy() */
 	call copy
 	/* write(STDOUT, &answer, 5); */
+	/*
 	mov $STDOUT, %rdi
 	mov $answer, %rsi
 	mov $5, %rdx
 	call write
+	*/
 	/* newline(); */
+	/*
 	call newline
+	*/
 	/* set_input_mode(); */
 	call set_input_mode
 	/* reset_count(); */

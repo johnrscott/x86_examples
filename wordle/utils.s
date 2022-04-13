@@ -7,12 +7,15 @@ buf1:
 	.ascii "\n\r\b \b"
 
 	/* For storing the old termios struct */
+	/* Not sure how long c_cc should be (I thought it was 8, but that
+	appears not to work, or I am doing something wrong. Need to look into.
+	*/
 buf2:
 	.int 0 /* c_iflag, input modes */
 	.int 0 /* c_oflag, output modes */
 	.int 0 /* c_cflag, control modes */
 	.int 0 /* c_lflag, local modes */
-	.space 8, 0 /* c_cc[8] */
+	.space 32, 0 /* c_cc[8] */
 
 	/* For storing the new termios struct */
 buf3:
@@ -20,7 +23,7 @@ buf3:
 	.int 0 /* c_oflag, output modes */
 	.int 0 /* c_cflag, control modes */
 	.int 0 /* c_lflag, local modes */
-	.space 8, 0 /* c_cc[8] */
+	.space 32, 0 /* c_cc[8] */
 
 	/* Buffer for storing the result of character reads, and for writing */
 buf4:	
@@ -112,7 +115,7 @@ set_input_mode:
 0:	mov (%rdi, %rcx, 4), %rdx
 	mov %rdx, (%rsi, %rcx, 4)
 	inc %rcx
-	cmp $6, %rcx
+	cmp $12, %rcx
 	jne 0b
 	/* Modify c_lflag */
 	and $(~ICANON & ~ECHO), 12(%rsi)
