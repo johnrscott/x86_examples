@@ -38,9 +38,12 @@ turn:
 	.text
 
 	/* Print colour-coded letters */
+	/* bool print() */
 print:
 	push %r12
 	push %r13
+	push %r14
+	mov $1, %r14
 	/* write(STDOUT, &turn, 3); */
 	mov $STDOUT, %rdi
 	mov $turn, %rsi
@@ -67,10 +70,12 @@ search: cmp (%r13), %dil
 	jmp search	
 miss:	mov $RED, %rsi
 	call putchar_colour
+	mov $0, %r14
 	jmp end
 	/* If found, remove the letter from the temp buffer */
 hit1:	mov $ORANGE, %rsi
 	call putchar_colour
+	mov $0, %r14
 	movb $'.', (%r13)
 end:	/* nanosleep(&ts_time, NULL); */
 	mov $ts_time, %rdi
@@ -79,7 +84,9 @@ end:	/* nanosleep(&ts_time, NULL); */
 	inc %r12
 	jmp begin
 	
-0:	pop %r13
+0:	mov %r14, %rax
+	pop %r14
+	pop %r13
 	pop %r12
 	ret
 	
