@@ -22,7 +22,7 @@ col_buf:
 guess:	
 	.ascii "        "
 answer:
-	.ascii "        " /* Padded to make 8 bytes */
+	.ascii "herds   " /* Padded to make 8 bytes */
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
@@ -114,9 +114,11 @@ remove:
 _start:
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
-	call get_random_word
-	/* copy() */
+	/*call get_random_word */
+	/* copy(); */
 	call copy
+	/* remove(); */
+	call remove
 	/* write(STDOUT, &answer, 5); */
 	/*
 	mov $STDOUT, %rdi
@@ -196,6 +198,8 @@ _start:
 	call copy
 	call remove
 	call print
+	
+	
 	inc %r9
 	jmp 0b
 1:	call exit_0
