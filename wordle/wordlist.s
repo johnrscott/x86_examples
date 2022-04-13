@@ -11,7 +11,7 @@ get_random_word:
 	push %rdi
 	/* getrandom(&rand_buf, 8, 0); */
 	mov $rand_buf, %rdi
-	mov $1, %rsi
+	mov $8, %rsi
 	mov $0, %rdx
 	call getrandom
 	mov rand_buf, %rax /* dividend */
