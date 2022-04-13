@@ -2,12 +2,6 @@
 #include <stdio.h>
 int main()
 {
-    // Test random numbers
-    long unsigned data;
-    getrandom(&data, 8, 0);
-    printf("%016lX\n", data);
-    exit_0();
-
     char buf[20];
     struct timespec ts_time = { .tv_sec = 0, .tv_nsec = 250000000 }; 
 
@@ -49,6 +43,12 @@ int main()
     }
 
     ioctl(STDIN,TCSETS,&buf2); // Reset    
-	
+
+    // Test random numbers
+    long unsigned data;
+    getrandom(&data, 8, 0);
+    printf("%016lX\n", data);
+    exit_0();
+    
     exit(3);
 }

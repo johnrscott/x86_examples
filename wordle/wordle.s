@@ -84,9 +84,19 @@ remove:
 2:	inc %r10
 	jmp 0b
 1:	ret
-	
+
 	.global _start
 _start:
+	/* get_random_word(&answer); */
+	mov $answer, %rdi
+	call get_random_word
+	/* write(STDOUT, &answer, 5); */
+	mov $STDOUT, %rdi
+	mov $answer, %rsi
+	mov $5, %rdx
+	call write
+	call exit_0
+	
 	mov $answer, %rdi
 	call in_wordlist
 	cmp $0, %rax
