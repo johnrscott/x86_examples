@@ -76,7 +76,6 @@ end:	/* nanosleep(&ts_time, NULL); */
 	call nanosleep
 	inc %r10
 	jmp begin
-
 	
 0:	ret
 	
