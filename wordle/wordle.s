@@ -104,16 +104,24 @@ _start:
 	call set_input_mode
 0:	/* char c = listen_char() */
 	call listen_char
-	/* bool done = process_char(c); */
+	/* bool done = process_char(c, &guess); */
 	mov %al, %dil
+	mov $guess, %rsi
 	call process_char
 	/* if (done == false) goto 0b; */
 	cmp $0, %rax
 	je 0b 
 	/* newline() */
 	call newline
+	/* write(STDOUT, &guess, 5); */
+	mov $STDOUT, %rdi
+	mov $guess, %rsi
+	mov $5, %rdx
+	call write
+	/* newline(); */
+	call newline
 	
-	mov $answer, %rdi
+	mov $guess, %rdi
 	call in_wordlist
 	cmp $0, %rax
 	je 1f

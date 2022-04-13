@@ -32,15 +32,19 @@ count:
 	
 	.text
 
-	/* bool process_char(int character) */
+	/* bool process_char(int character, char * buf) */
 	.global process_char
-process_char:	
+process_char:
+	
+	/* Look for special characters */
 	cmp $'\n', %dil
 	je 1f
 	cmp $127, %dil
 	je 2f
 	
 	/* Handle printable character */
+	mov count, %rdx
+	movb %dil, (%rsi, %rdx, 1)
 	incw count
 	call putchar
 	jmp 3f
