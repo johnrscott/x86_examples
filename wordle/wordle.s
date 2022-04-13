@@ -9,6 +9,12 @@ hit_msg:
 	.ascii "Hit\n"
 miss_msg:
 	.ascii "Miss\n"
+
+not_word:
+	.ascii "   [Not a valid word]"
+
+clear_line:
+	.ascii "                               "
 	
 col_buf:
 	.space 5, BLUE
@@ -102,29 +108,47 @@ _start:
 	call newline
 	/* set_input_mode(); */
 	call set_input_mode
+	/* reset_count(); */
+5:	call reset_count
 0:	/* char c = listen_char() */
 	call listen_char
 	/* bool guess_is_ready = process_char(c, &guess); */
 	mov %al, %dil
 	mov $guess, %rsi
 	call process_char
-	/* if (!guess_is_read) goto 0b; */
+	/* if (!guess_is_ready) goto 0b; */
 	cmp $0, %rax
-	je 0b 
-	/* newline() */
-	call newline
-	/* write(STDOUT, &guess, 5); */
-	mov $STDOUT, %rdi
-	mov $guess, %rsi
-	mov $5, %rdx
-	call write
-	/* newline(); */
-	call newline
-	
+	je 0b
+	/* bool result = in_wordlist(&guess) */
 	mov $guess, %rdi
 	call in_wordlist
 	cmp $0, %rax
 	je 1f
+	jmp 2f	
+1:	/* Word is not in list */
+	mov $STDOUT, %rdi
+	mov $not_word, %rsi
+	mov $21, %rdx
+	call write
+	mov $ts_time, %rdi
+	xor %rsi, %rsi
+	call nanosleep
+	call nanosleep
+	call nanosleep
+	call nanosleep
+	call carriage_return
+	mov $STDOUT, %rdi
+	mov $clear_line, %rsi
+	mov $30, %rdx
+	call write
+	call carriage_return
+	jmp 5b
+	
+2:	/* carriage_return(); */
+	call carriage_return
+	call print
+
+	
 	mov $hit_msg, %rsi
 	mov $4, %rdx
 	jmp 2f

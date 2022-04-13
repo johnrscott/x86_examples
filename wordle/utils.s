@@ -32,6 +32,12 @@ count:
 	
 	.text
 
+	/* reset_count() */
+	.global reset_count
+reset_count:
+	movw $0, count
+	ret
+	
 	/* bool process_char(int character, char * buf) */
 	.global process_char
 process_char:	
