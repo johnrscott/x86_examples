@@ -22,7 +22,7 @@ col_buf:
 guess:	
 	.ascii "        "
 answer:
-	.ascii "herds   " /* Padded to make 8 bytes */
+	.ascii "        " /* Padded to make 8 bytes */
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
@@ -91,22 +91,19 @@ end:	/* nanosleep(&ts_time, NULL); */
 	ret
 	
 	
-	/* void copy() */
-copy:
-	mov answer, %r10
-	mov %r10, temp
-	ret
-
+	/* void init_temp() */
+init_temp:
+	mov answer, %rsi
+	mov %rsi, temp
 	/* Remove correctly placed letters from temp */
-remove:
-	mov $guess, %r10
-0:	cmp $guess+5, %r10
+	mov $guess, %rsi
+0:	cmp $guess+5, %rsi
 	je 1f
-	mov (%r10), %dil
-	cmp 16(%r10), %dil
+	mov (%rsi), %dil
+	cmp 16(%rsi), %dil
 	jne 2f
-	movb $'.', 16(%r10) 
-2:	inc %r10
+	movb $'.', 16(%rsi) 
+2:	inc %rsi
 	jmp 0b
 1:	ret
 	
@@ -114,7 +111,7 @@ remove:
 _start:
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
-	/*call get_random_word */
+	call get_random_word
 	/* write(STDOUT, &answer, 5); */
 	/*
 	mov $STDOUT, %rdi
@@ -169,10 +166,8 @@ _start:
 	call carriage_return
 	jmp 5b
 	
-2:	/* copy(); */
-	call copy
-	/* remove(); */
-	call remove
+2:	/* init_temp(); */
+	call init_temp
 	/* carriage_return(); */
 	call carriage_return
 	call print
@@ -186,21 +181,3 @@ _start:
 	
 	call exit_0
 
-	xor %r9, %r9
-0:	cmp $5, %r9 /* only allow 5 guesses */
-	je 1f
-	/* read(STDIN, &guess, 6); */
-	mov $STDIN, %rdi
-	mov $guess, %rsi
-	mov $6, %rdx
-	call read
-	
-	call copy
-	call remove
-	call print
-	
-	
-	inc %r9
-	jmp 0b
-1:	call exit_0
-	
