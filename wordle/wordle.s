@@ -29,11 +29,21 @@ temp:
 ts_time:
 	.int 0,0
 	.int 250000000, 0 /* Sleep time, nanoseconds */
+
+
+turn:	
+	.ascii "1: " /* Increment the first character on each turn */
+
 	
 	.text
 
 	/* Print colour-coded letters */
 print:
+	/* write(STDOUT, &turn, 3); */
+	mov $STDOUT, %rdi
+	mov $turn, %rsi
+	mov $3, %rdx
+	call write
 	mov $guess, %r10
 	/* Loop over all the letters in the guess */
 begin:	cmp $guess+5, %r10
@@ -68,9 +78,7 @@ end:	/* nanosleep(&ts_time, NULL); */
 	jmp begin
 
 	
-0:	mov $'\n', %edi
-	call putchar_colour
-	ret
+0:	ret
 	
 	
 	/* Copy the answer to a temporary buffer */
@@ -91,8 +99,6 @@ remove:
 2:	inc %r10
 	jmp 0b
 1:	ret
-
-
 	
 	.global _start
 _start:
@@ -110,6 +116,11 @@ _start:
 	call set_input_mode
 	/* reset_count(); */
 5:	call reset_count
+	/* write(STDOUT, &turn, 3); */
+	mov $STDOUT, %rdi
+	mov $turn, %rsi
+	mov $3, %rdx
+	call write
 0:	/* char c = listen_char() */
 	call listen_char
 	/* bool guess_is_ready = process_char(c, &guess); */
@@ -147,6 +158,9 @@ _start:
 2:	/* carriage_return(); */
 	call carriage_return
 	call print
+	/* newline(); */
+	call newline
+	incb turn
 	jmp 5b
 	
 	/* restore_input_mode() */
