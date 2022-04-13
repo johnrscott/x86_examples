@@ -147,16 +147,8 @@ _start:
 2:	/* carriage_return(); */
 	call carriage_return
 	call print
-
+	jmp 5b
 	
-	mov $hit_msg, %rsi
-	mov $4, %rdx
-	jmp 2f
-1: 	mov $miss_msg, %rsi
-	mov $5, %rdx
-2:	mov $STDOUT, %rdi
-	call write
-
 	/* restore_input_mode() */
 	call restore_input_mode
 	
