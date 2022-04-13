@@ -21,9 +21,34 @@ buf3:
 	.int 0 /* c_cflag, control modes */
 	.int 0 /* c_lflag, local modes */
 	.space 8, 0 /* c_cc[8] */
+
+	/* Buffer for storing the result of character reads, and for writing */
+buf4:	
+	.space 8, 0
 	
 	.text
 
+	/* int putchar(int character) */
+	.global putchar
+putchar:
+	mov %rdi, buf4
+	mov $STDOUT, %rdi
+	mov $buf4, %rsi
+	mov $1, %rdx
+	call write
+	mov buf4, %rax
+	ret
+	
+	/* char listen_char() */
+	.global listen_char
+listen_char:
+	mov $STDIN, %rdi
+	mov $buf4, %rsi
+	mov $8, %rdx
+	call read
+	mov buf4, %al 
+	ret
+	
 	/* void set_input_mode() */
 	.global set_input_mode
 set_input_mode:

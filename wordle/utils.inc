@@ -1,3 +1,7 @@
+
+	/* char listen_char() */
+	.extern listen_char
+
 	/* void newline() */
 	.extern newline
 

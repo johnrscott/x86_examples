@@ -102,7 +102,30 @@ _start:
 	call newline
 	/* set_input_mode(); */
 	call set_input_mode
-
+0:	/* char c = process_char() */
+	call listen_char
+	cmp $'\n', %al
+	je 1f
+	cmp $127, %al
+	je 2f
+	
+	/* Handle printable character */
+	xor %rdi, %rdi
+	mov %al, %dil
+	call putchar
+	jmp 3f
+	
+1:	/* Handle newline */
+	call newline
+	jmp 3f
+	
+2:	/* Handle backspace */
+	call backspace
+	jmp 3f
+	
+3:	
+	
+	jmp 0b
 	
 	mov $answer, %rdi
 	call in_wordlist
