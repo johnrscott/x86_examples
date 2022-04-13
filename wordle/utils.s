@@ -66,6 +66,8 @@ process_char:
 	ret
 	
 2:	/* Handle backspace */
+	cmp $0, count
+	je 3f
 	decw count
 	call backspace
 	jmp 3f
