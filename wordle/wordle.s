@@ -1,6 +1,6 @@
 	.include "syscall.inc"
 	.include "io.inc"
-	.include "wordlist.inc"
+	.include "list.inc"
 	.include "utils.inc"
 	
 	.data
@@ -58,7 +58,7 @@ equal:	mov (%r10), %dil
 	jmp end
 	/* If not, check if the letter is present anywhere */
 search: cmp (%r11), %dil
-	je hit
+	je hit1
 	cmp $temp+5, %r11
 	je miss
 	inc %r11
@@ -67,7 +67,7 @@ miss:	mov $RED, %rsi
 	call putchar_colour
 	jmp end
 	/* If found, remove the letter from the temp buffer */
-hit:	mov $ORANGE, %rsi
+hit1:	mov $ORANGE, %rsi
 	call putchar_colour
 	movb $'.', (%r11)
 end:	/* nanosleep(&ts_time, NULL); */
@@ -80,7 +80,7 @@ end:	/* nanosleep(&ts_time, NULL); */
 0:	ret
 	
 	
-	/* Copy the answer to a temporary buffer */
+	/* void copy() */
 copy:
 	mov answer, %r10
 	mov %r10, temp
@@ -104,6 +104,8 @@ _start:
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
 	call get_random_word
+	/* copy() */
+	call copy
 	/* write(STDOUT, &answer, 5); */
 	mov $STDOUT, %rdi
 	mov $answer, %rsi
