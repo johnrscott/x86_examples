@@ -1,4 +1,10 @@
 
+	/* void restore_input_mode() */
+	.extern restore_input_mode
+	
+	/* bool process_char(int character) */
+	.extern process_char
+	
 	/* char listen_char() */
 	.extern listen_char
 

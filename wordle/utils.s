@@ -25,9 +25,43 @@ buf3:
 	/* Buffer for storing the result of character reads, and for writing */
 buf4:	
 	.space 8, 0
+
+	/* Counter for current number of chars on line */
+count:
+	.int 0
 	
 	.text
 
+	/* bool process_char(int character) */
+	.global process_char
+process_char:	
+	cmp $'\n', %dil
+	je 1f
+	cmp $127, %dil
+	je 2f
+	
+	/* Handle printable character */
+	incw count
+	call putchar
+	jmp 3f
+	
+1:	/* Handle newline */
+	cmp $5, count
+	je 4f
+	mov $0, %rax /* Return false */ 
+	ret
+4:	mov $1, %rax /* Return true */
+	ret
+	
+2:	/* Handle backspace */
+	decw count
+	call backspace
+	jmp 3f
+	
+3:	mov $0, %rax
+	ret
+
+	
 	/* int putchar(int character) */
 	.global putchar
 putchar:
@@ -75,6 +109,17 @@ set_input_mode:
 	call ioctl
 	ret
 
+	/* void restore_input_mode() */
+	.global restore_input_mode
+restore_input_mode:
+	/* ioctl(STDOUT, TCSETS, &buf2); */
+	mov $STDOUT, %rdi
+	mov $TCSETS, %rsi
+	mov $buf2, %rdx
+	call ioctl
+	ret
+
+	
 	/* void newline(); */
 	.global newline
 newline:
