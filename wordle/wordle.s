@@ -2,6 +2,7 @@
 	.include "io.inc"
 	.include "list.inc"
 	.include "utils.inc"
+	.include "sleep.inc"
 	
 	.data
 
@@ -26,14 +27,14 @@ answer:
 temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
-ts_time:
-	.int 0,0
-	.int 250000000, 0 /* Sleep time, nanoseconds */
-
-
 turn:	
 	.ascii "1: " /* Increment the first character on each turn */
 
+congrats:
+	.ascii "Well done!"
+
+wrong:
+	.ascii "The correct answer was "
 	
 	.text
 
@@ -77,10 +78,8 @@ hit1:	mov $ORANGE, %rsi
 	call putchar_colour
 	mov $0, %r14
 	movb $'.', (%r13)
-end:	/* nanosleep(&ts_time, NULL); */
-	mov $ts_time, %rdi
-	xor %rsi, %rsi
-	call nanosleep
+end:	/* sleep_short(); */
+	call sleep_medium
 	inc %r12
 	jmp begin
 	
@@ -152,12 +151,8 @@ _start:
 	mov $not_word, %rsi
 	mov $21, %rdx
 	call write
-	mov $ts_time, %rdi
-	xor %rsi, %rsi
-	call nanosleep
-	call nanosleep
-	call nanosleep
-	call nanosleep
+	/* sleep_long(); */
+	call sleep_long
 	call carriage_return
 	mov $STDOUT, %rdi
 	mov $clear_line, %rsi
@@ -170,14 +165,41 @@ _start:
 	call init_temp
 	/* carriage_return(); */
 	call carriage_return
+	/* bool success = print() */
 	call print
+	cmp $1, %rax
+	je 1f
 	/* newline(); */
 	call newline
 	incb turn
+	cmpb $'6', turn
+	je 3f
 	jmp 5b
+
+1:	call newline
+	/* write(STDOUT, &congrats, 10); */
+	mov $STDOUT, %rdi
+	mov $congrats, %rsi
+	mov $10, %rdx
+	call write
+	call sleep_long
+	call newline
+	jmp 2f
+
+	/* write(STDOUT, &congrats, 11); */
+3:	mov $STDOUT, %rdi
+	mov $wrong, %rsi
+	mov $23, %rdx
+	call write
+	mov $STDOUT, %rdi
+	mov $answer, %rsi
+	mov $5, %rdx
+	call write
+	call sleep_long
+	call newline
 	
 	/* restore_input_mode() */
-	call restore_input_mode
+2:	call restore_input_mode
 	
 	call exit_0
 
