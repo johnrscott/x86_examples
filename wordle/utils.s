@@ -35,12 +35,6 @@ count:
 	
 	.text
 
-	/* reset_count() */
-	.global reset_count
-reset_count:
-	movw $0, count
-	ret
-	
 	/* bool process_char(int character, char * buf) */
 	.global process_char
 process_char:	
@@ -63,9 +57,13 @@ process_char:
 1:	/* Handle newline */
 	cmp $5, count
 	je 4f
-	mov $0, %rax /* Return false */ 
+	/* Return false */ 
+	mov $0, %rax
 	ret
-4:	mov $1, %rax /* Return true */
+4:	/* Return true */
+	mov $1, %rax
+	/* Reset the buffer counter */
+	movl $0, count
 	ret
 	
 2:	/* Handle backspace */

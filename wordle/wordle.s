@@ -124,9 +124,7 @@ _start:
 	*/
 	/* set_input_mode(); */
 	call set_input_mode
-	/* reset_count(); */
-5:	call reset_count
-	/* write(STDOUT, &turn, 3); */
+5:	/* write(STDOUT, &turn, 3); */
 	mov $STDOUT, %rdi
 	mov $turn, %rsi
 	mov $3, %rdx
