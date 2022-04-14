@@ -22,3 +22,15 @@ putchar_colour:
 	/* write(STDOUT, &buf, buf_len); */
 	call write
 	ret
+
+	/* int putchar(int character) */
+	.global putchar
+putchar:
+	mov %rdi, char
+	mov $STDOUT, %rdi
+	mov $char, %rsi
+	mov $1, %rdx
+	call write
+	mov char, %rax
+	ret
+	

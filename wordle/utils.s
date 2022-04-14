@@ -76,18 +76,7 @@ process_char:
 3:	mov $0, %rax
 	ret
 
-	
-	/* int putchar(int character) */
-	.global putchar
-putchar:
-	mov %rdi, buf4
-	mov $STDOUT, %rdi
-	mov $buf4, %rsi
-	mov $1, %rdx
-	call write
-	mov buf4, %rax
-	ret
-	
+
 	/* char listen_char() */
 	.global listen_char
 listen_char:
@@ -132,6 +121,15 @@ restore_input_mode:
 	mov $TCSETS, %rsi
 	mov $buf2, %rdx
 	call ioctl
+	ret
+
+	/* void newline(); */
+	.global spacebar
+spacebar:
+	mov $STDOUT, %rdi
+	mov $buf1+3, %rsi
+	mov $1, %rdx
+	call write
 	ret
 
 	

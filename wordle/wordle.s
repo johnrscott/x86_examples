@@ -12,10 +12,8 @@ miss_msg:
 	.ascii "Miss\n"
 
 not_word:
-	.ascii "   [Not a valid word]"
-
-clear_line:
-	.ascii "                               "
+	.ascii "\033[1;31msorry, not a valid word!\033[0m"
+	.equiv not_word_len, .-not_word
 	
 col_buf:
 	.space 5, BLUE
@@ -38,6 +36,53 @@ wrong:
 	
 	.text
 
+
+	/* void clear_line() */
+clear_line:
+	push %r12
+	xor %r12, %r12
+0:	call backspace
+	inc %r12
+	cmp $100, %r12
+	jl 0b
+	pop %r12
+	ret
+
+	/* void not_a__word() */
+not_a_word:
+	push %r12
+	push %r13
+	xor %r12,%r12
+0:	call spacebar
+	inc %r12
+	cmp $4, %r12
+	jl 0b
+	xor %r12,%r12
+0:	bt $0, %r12
+	jnc 2f
+	call spacebar
+	jmp 3f
+2:	call backspace
+	/* write(STDOUT, &not_word, not_word_len); */
+3:	mov $STDOUT, %rdi
+	mov $not_word, %rsi
+	mov $not_word_len, %rdx
+	call write
+	call sleep_short
+	inc %r12
+	cmp $6, %r12
+	je 2f
+	xor %r13,%r13
+1:	call backspace
+	inc %r13
+	cmp $24, %r13
+	jl 1b
+	jmp 0b
+2:	pop %r13
+	pop %r12
+	ret
+	
+	
 	/* Print colour-coded letters */
 	/* bool print() */
 print:
@@ -111,17 +156,6 @@ _start:
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
 	call get_random_word
-	/* write(STDOUT, &answer, 5); */
-	/*
-	mov $STDOUT, %rdi
-	mov $answer, %rsi
-	mov $5, %rdx
-	call write
-	*/
-	/* newline(); */
-	/*
-	call newline
-	*/
 	/* set_input_mode(); */
 	call set_input_mode
 5:	/* write(STDOUT, &turn, 3); */
@@ -145,18 +179,11 @@ _start:
 	je 1f
 	jmp 2f	
 1:	/* Word is not in list */
-	mov $STDOUT, %rdi
-	mov $not_word, %rsi
-	mov $21, %rdx
-	call write
+	call not_a_word
 	/* sleep_long(); */
 	call sleep_long
-	call carriage_return
-	mov $STDOUT, %rdi
-	mov $clear_line, %rsi
-	mov $30, %rdx
-	call write
-	call carriage_return
+	/* clear_line(); */
+	call clear_line
 	jmp 5b
 	
 2:	/* init_temp(); */
