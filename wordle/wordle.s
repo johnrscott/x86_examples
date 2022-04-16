@@ -26,7 +26,7 @@ temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
 turn:	
-	.ascii "1: " /* Increment the first character on each turn */
+	.ascii "\033[0m1: " /* Increment the first character on each turn */
 
 congrats:
 	.ascii "Well done!"
@@ -93,7 +93,7 @@ print:
 	/* write(STDOUT, &turn, 3); */
 	mov $STDOUT, %rdi
 	mov $turn, %rsi
-	mov $3, %rdx
+	mov $7, %rdx
 	call write
 	mov $guess, %r12
 	/* Loop over all the letters in the guess */
@@ -161,7 +161,7 @@ _start:
 5:	/* write(STDOUT, &turn, 3); */
 	mov $STDOUT, %rdi
 	mov $turn, %rsi
-	mov $3, %rdx
+	mov $7, %rdx
 	call write
 0:	/* char c = listen_char() */
 	call listen_char
@@ -196,7 +196,7 @@ _start:
 	je 1f
 	/* newline(); */
 	call newline
-	incb turn
+	incb turn+4
 	cmpb $'6', turn
 	je 3f
 	jmp 5b
