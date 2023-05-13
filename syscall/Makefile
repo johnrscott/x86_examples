@@ -11,3 +11,6 @@ syscall.o: syscall.s syscall.s
 
 testc.bin: testc.c syscall.o syscall.h
 	gcc -O3 testc.c syscall.o -o testc.bin
+
+clean:
+	rm *.o *.bin

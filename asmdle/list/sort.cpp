@@ -9,6 +9,10 @@
  * Run the program in the same directory as a list of words, line separated,
  * in a file called "input.txt". The words are sorted, then stored in an 
  * assembly file with padding so that each occupies 8 bytes.
+ *
+ * The current version of the word list (input.txt) comes from
+ * https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b
+ *
  */
 int main()
 {
@@ -20,15 +24,15 @@ int main()
     
     std::sort(std::begin(words), std::end(words));
 
-    std::ofstream ofile;
-    ofile.open("output.s");
-    ofile << ".data" << std::endl;
-    ofile << ".equiv " << "NUM_WORDS, " << words.size() << std::endl;
-    ofile << ".ascii \"";
+    std::ofstream output_assembly;
+    output_assembly.open("output.s");
+    output_assembly << ".data" << std::endl;
+    output_assembly << ".equiv " << "NUM_WORDS, " << words.size() << std::endl;
+    output_assembly << ".ascii \"";
     for (const auto & str : words) {
-	ofile << str << "   " ;
+	output_assembly << str << "   " ;
     }
-    ofile << "\"" << std::endl;
-    ofile.close();
+    output_assembly << "\"" << std::endl;
+    output_assembly.close();
     std::cout << "Sorted words saved to output.s" << std::endl;
 }

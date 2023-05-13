@@ -6,6 +6,11 @@
 	
 	.data
 
+welcome:
+	.ascii "Welcome to Wordle! You have five\n"
+	.ascii "guesses to get the word. Good luck!\n"
+	.equiv welcome_len, .-welcome
+	
 hit_msg:
 	.ascii "Hit\n"
 miss_msg:
@@ -26,7 +31,7 @@ temp:
 	.space 8 /* Extra space to allow 8-byte move */
 
 turn:	
-	.ascii "\033[0m1: " /* Increment the first character on each turn */
+	.ascii "\033[0m1: " /* Increment the fifth character on each turn */
 
 congrats:
 	.ascii "Well done!"

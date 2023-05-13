@@ -1,0 +1,5 @@
+#+TITLE: Asmdle! (Wordle in assembly language)
+
+This folder contains an implementation of the word game Wordle, in assembly language. It is (possibly) not even portable between different x86_64 Linux variants, due to the planned use of sys_ioctl for console manipulation. 
+
+
