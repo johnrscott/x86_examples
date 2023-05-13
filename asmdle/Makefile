@@ -1,10 +1,10 @@
 AFLAGS=-g
 
-wordle.bin: wordle.o syscall.o io.o list.o utils.o sleep.o
-	ld wordle.o io.o list.o syscall.o utils.o sleep.o -o wordle.bin
+asmdle.bin: asmdle.o syscall.o io.o list.o utils.o sleep.o
+	ld asmdle.o io.o list.o syscall.o utils.o sleep.o -o asmdle.bin
 
-wordle.o: wordle.s
-	as ${AFLAGS} -I../syscall wordle.s -o wordle.o
+asmdle.o: asmdle.s
+	as ${AFLAGS} -I../syscall asmdle.s -o asmdle.o
 
 syscall.o:
 	as ${AFLAGS} ../syscall/syscall.s -o syscall.o

@@ -3,7 +3,7 @@
 	.data
 ts_time:
 	.int 0,0
-	.int 125000000, 0 /* Sleep time, nanoseconds */
+	.int 100000000, 0 /* Sleep time, nanoseconds */
 
 	.text
 

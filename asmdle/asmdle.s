@@ -7,8 +7,8 @@
 	.data
 
 welcome:
-	.ascii "Welcome to Wordle! You have five\n"
-	.ascii "guesses to get the word. Good luck!\n"
+	.ascii "Welcome to Wordle! You have six\n"
+	.ascii "guesses to get the word. Good luck!\n\n"
 	.equiv welcome_len, .-welcome
 	
 hit_msg:
@@ -34,11 +34,13 @@ turn:
 	.ascii "\033[0m1: " /* Increment the fifth character on each turn */
 
 congrats:
-	.ascii "Well done!"
+	.ascii "\nYou got it right! Well done!"
+	.equiv congrats_len, . - congrats
 
 wrong:
+	.ascii "\033[0m\nOh no! You're out of guesses\n"
 	.ascii "The correct answer was "
-	
+	.equiv wrong_len, . - wrong
 	.text
 
 
@@ -53,7 +55,7 @@ clear_line:
 	pop %r12
 	ret
 
-	/* void not_a__word() */
+	/* void not_a_word() */
 not_a_word:
 	push %r12
 	push %r13
@@ -158,6 +160,11 @@ init_temp:
 	
 	.global _start
 _start:
+	/* write(STDOUT, &welcome, welcome_len); */
+	mov $STDOUT, %rdi
+	mov $welcome, %rsi
+	mov $welcome_len, %rdx
+	call write
 	/* get_random_word(&answer); */
 	mov $answer, %rdi
 	call get_random_word
@@ -202,24 +209,24 @@ _start:
 	/* newline(); */
 	call newline
 	incb turn+4
-	cmpb $'6', turn
+	cmpb $'7', turn+4
 	je 3f
 	jmp 5b
 
 1:	call newline
-	/* write(STDOUT, &congrats, 10); */
+	/* write(STDOUT, &congrats, congrats_len); */
 	mov $STDOUT, %rdi
 	mov $congrats, %rsi
-	mov $10, %rdx
+	mov $congrats_len, %rdx
 	call write
 	call sleep_long
 	call newline
 	jmp 2f
 
-	/* write(STDOUT, &congrats, 11); */
+	/* write(STDOUT, &wrong, 11); */
 3:	mov $STDOUT, %rdi
 	mov $wrong, %rsi
-	mov $23, %rdx
+	mov $wrong_len, %rdx
 	call write
 	mov $STDOUT, %rdi
 	mov $answer, %rsi
